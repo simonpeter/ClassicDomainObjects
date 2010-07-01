@@ -5,10 +5,17 @@
 package org.simonpeter.domain;
 
 import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
-
+/**
+ * Test the {@link SocialSecurityNumber} domain object.
+ *
+ * @author  Simon Peter Chappell
+ * @version 20100621
+ * @see org.simonpeter.domain.SocialSecurityNumber
+ */
 public class SocialSecurityNumberTest {
 
 	//@SuppressWarnings("unused")
@@ -77,4 +84,60 @@ public class SocialSecurityNumberTest {
 		// First advertising number
 		ssn = new SocialSecurityNumber("987", "65", "4320");
 	}
+
+	@Test public void testReflexiveBehaviorOfEquals() {
+		// An object is always equal to itself.
+		ssn = new SocialSecurityNumber("123", "45", "6789");
+		assertEquals(ssn, ssn);
+		assertTrue(ssn.equals(ssn));
+	}
+
+	@Test public void testNullBehaviorOfEquals() {
+		// An object is never equal to null.
+		ssn = new SocialSecurityNumber("123", "45", "6789");
+		assertFalse(ssn.equals(null));
+	}
+
+	@Test public void testSymmetricalBehaviorOfEquals() {
+		// If o1 is equal to o2, then o2 must be equal to o1.
+		SocialSecurityNumber s1 = new SocialSecurityNumber("123", "45", "6789");
+		SocialSecurityNumber s2 = new SocialSecurityNumber("123", "45", "6789");
+		assertTrue(s1.equals(s2));
+		assertTrue(s2.equals(s1));
+	}
+
+	@Test public void testTransitiveBehaviorOfEquals() {
+		// If o1 is equal to o2 and o2 is equal to o3,
+		// then o3 must be equal to o1.
+		SocialSecurityNumber s1 = new SocialSecurityNumber("123", "45", "6789");
+		SocialSecurityNumber s2 = new SocialSecurityNumber("123", "45", "6789");
+		SocialSecurityNumber s3 = new SocialSecurityNumber("123", "45", "6789");
+		assertTrue(s1.equals(s2));
+		assertTrue(s2.equals(s3));
+		assertTrue(s3.equals(s1));
+	}
+
+	@Test public void testUnequalValuesBehaviorOfEquals() {
+		// If o1 does not equal o2, then o2 must not equal o1.
+		SocialSecurityNumber s1 = new SocialSecurityNumber("111", "11", "1111");
+		SocialSecurityNumber s2 = new SocialSecurityNumber("222", "22", "2222");
+		assertFalse(s1.equals(s2));
+		assertFalse(s2.equals(s1));
+	}
+
+	@Test public void testEqualObjectsHaveEqualHashCodes() {
+		// Objects that are equal must have equal hashcodes.
+		SocialSecurityNumber s1 = new SocialSecurityNumber("123", "45", "6789");
+		SocialSecurityNumber s2 = new SocialSecurityNumber("123", "45", "6789");
+		assertEquals(s1.hashCode(), s2.hashCode());
+	}
+
+	@Test public void testSameObjectAlwaysSameHashCode() {
+		// An unchanged object should always have the same hashcode.
+		SocialSecurityNumber ssn = new SocialSecurityNumber("123", "45", "6789");
+		int h1 = ssn.hashCode();
+		int h2 = ssn.hashCode();
+		assertEquals(h1, h2);
+	}
+
 }

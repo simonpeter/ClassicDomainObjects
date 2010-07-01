@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<project name="ClassicDomainObjects" default="build" basedir=".">
+
+    <property name="src"             value="src" />
+    <property name="src.test"        value="test" />
+    <property name="build"           value="bin" />
+    <property name="reports"         value="reports" />
+    <property name="lib"             value="lib" />
+    <property name="dist"            value="dist" />
+    <property name="version.number"  value="0.0.1" />
+
+    <path id ="base.path">
+        <pathelement location="${lib}/TestUtilities-0.0.1.jar" />
+    </path>
+    <path id ="test.path">
+        <path refid="base.path" />
+        <pathelement location="${build}" />
+        <pathelement location="${lib}/junit-4.8.2.jar" />
+    </path>
+
+    <target name="clean" description="Remove all build product and intermediate files.">
+        <delete dir="${build}" />
+        <delete dir="${reports}" />
+        <delete dir="${dist}" />
+    </target>
+
+    <target name="init" description="Initialize build process.">
+        <tstamp/>
+        <available property="junit.present" classpathref="test.path" classname="org.junit.Test" />
+    </target>
+
+    <target name="compile" depends="init" description="Compile Java code.">
+        <mkdir dir="${build}" />
+        <javac srcdir="${src}"      destdir="${build}" classpathref="base.path" />
+        <javac srcdir="${src.test}" destdir="${build}" classpathref="test.path" />
+    </target>
+
+    <target name="test" depends="compile" if="junit.present" description="Run available unit tests.">
+        <mkdir dir="${reports}" />
+        <junit>
+            <classpath>
+                <path refid="test.path" />
+            </classpath>
+            <formatter type="plain" usefile="false" />
+            <formatter type="xml" />
+            <batchtest todir="${reports}">
+                <fileset dir="${build}">
+                    <include name="org/simonpeter/**/*Test.class" />
+                </fileset>
+            </batchtest>
+        </junit>
+        <junitreport todir="${reports}">
+            <fileset dir="${reports}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="${reports}/html" />
+        </junitreport>
+    </target>
+
+    <target name="jar" depends="test" description="Create a JAR file.">
+        <mkdir dir="${dist}" />
+        <jar destfile="${dist}/ClassicDomainObjects-${version.number}.jar">
+            <fileset dir="${build}" />
+        </jar>
+    </target>
+
+    <target name="build" depends="jar" description="Run a full build." />
+
+</project>
