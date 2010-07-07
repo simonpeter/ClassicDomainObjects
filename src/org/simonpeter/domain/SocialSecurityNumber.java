@@ -4,14 +4,14 @@
 
 package org.simonpeter.domain;
 
-import org.simonpeter.test.GuardCondition;
+import org.simonpeter.test.GuardedInteger;
 import org.simonpeter.test.GuardedString;
 
 /**
  * Represent a U.S. Social Security Number.
  *
  * @author  Simon Peter Chappell
- * @version 20100623
+ * @version 20100707
  */
 public class SocialSecurityNumber {
 
@@ -20,26 +20,19 @@ public class SocialSecurityNumber {
 	private final String _serialNumber;
 	
 	public SocialSecurityNumber(String area, String group, String serial) {
-		GuardedString area_g = new GuardedString(area);
-		GuardedString group_g = new GuardedString(group);
-		GuardedString serial_g = new GuardedString(serial);
-
-		area_g.mustNotBeNullOrBlank().mustMatchRegex("[0-9][0-9][0-9]");
-		group_g.mustNotBeNullOrBlank().mustMatchRegex("[0-9][0-9]");
-		serial_g.mustNotBeNullOrBlank().mustMatchRegex("[0-9][0-9][0-9][0-9]");
-
+		new GuardedString(area).mustNotBeNullOrBlank().mustMatchRegex("[0-9][0-9][0-9]");
+		new GuardedString(group).mustNotBeNullOrBlank().mustMatchRegex("[0-9][0-9]");
+		new GuardedString(serial).mustNotBeNullOrBlank().mustMatchRegex("[0-9][0-9][0-9][0-9]");
 		// Should be a numeric integer value, so convert to integers
-		int areaNumber   = Integer.parseInt(area);
-		int groupNumber  = Integer.parseInt(group);
-		int serialNumber = Integer.parseInt(serial);
-		GuardCondition.mustFallOutsideRangeInclusive(areaNumber, 734, 749);
-		GuardCondition.mustBeLessThan(areaNumber, 773);
-		GuardCondition.mustNotBeZero(areaNumber);
-		GuardCondition.mustNotBeZero(groupNumber);
-		GuardCondition.mustNotBeZero(serialNumber);
-		GuardCondition.mustNotBeEqual(areaNumber, 666);
-		if (areaNumber == 987 && groupNumber == 65) {
-			GuardCondition.mustFallOutsideRangeInclusive(serialNumber, 4320, 4329);
+		GuardedInteger area_gi = new GuardedInteger(area);
+		GuardedInteger group_gi = new GuardedInteger(group);
+		GuardedInteger serial_gi = new GuardedInteger(serial);
+		
+		area_gi.mustNotBeZero().mustBeLessThan(773).mustFallOutsideRangeInclusive(734, 749).mustNotEqual(666);
+		group_gi.mustNotBeZero();
+		serial_gi.mustNotBeZero();
+		if (area_gi.is(987) && group_gi.is(65)) {
+			serial_gi.mustFallOutsideRangeInclusive(4320, 4329);
 		}
 
 		// Make assignments
@@ -64,7 +57,7 @@ public class SocialSecurityNumber {
 	 * 
 	 * @param obj - the reference object with which to compare.
 	 * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
-	 * @see java.util.Object
+	 * @see java.util.Object#equals
 	 */
 	@Override public boolean equals(Object obj) {
 		if (obj == this) { return true; }
@@ -97,5 +90,20 @@ public class SocialSecurityNumber {
 		result = 37 * result + _groupNumber.hashCode();
 		result = 37 * result + _serialNumber.hashCode();
 		return result;
+	}
+
+	/**
+	 * Returns the string representation of this U.S. Social Security
+	 * Number. The string consists of eleven characters whose format
+	 * is "AAA-BB-CCCC", where AAA is the area number, BB is the group
+	 * number and CCCC is the serial number.
+	 * <p>
+	 * All elements of the number are validated to have leading zeroes
+	 * where necessary at object creation.
+	 * 
+	 * @return the string representation of this U.S. Social Security Number.
+	 */
+	@Override public String toString() {
+		return _areaNumber+"-"+_groupNumber+"-"+_serialNumber;
 	}
 }

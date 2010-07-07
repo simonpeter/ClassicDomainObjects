@@ -1,5 +1,5 @@
 /*
- * SocialSecurityNumber.java
+ * SocialSecurityNumberTest.java
  */
 
 package org.simonpeter.domain;
@@ -13,37 +13,34 @@ import org.junit.Test;
  * Test the {@link SocialSecurityNumber} domain object.
  *
  * @author  Simon Peter Chappell
- * @version 20100621
+ * @version 20100707
  * @see org.simonpeter.domain.SocialSecurityNumber
  */
 public class SocialSecurityNumberTest {
 
-	//@SuppressWarnings("unused")
 	private SocialSecurityNumber ssn;
-	
-	@Test
-	public void testThreeArgConstructionOfValidSSN() {
+
+	@Test public void testThreeArgConstructionOfValidSSN() {
 		ssn = new SocialSecurityNumber("123", "45", "6789");
 	}
-	
-	@Test
-	public void testAccessors() {
+
+	@Test public void testAccessors() {
 		ssn = new SocialSecurityNumber("123", "45", "6789");
 		assertEquals("123",  ssn.getAreaNumber());
 		assertEquals("45",   ssn.getGroupNumber());
 		assertEquals("6789", ssn.getSerialNumber());
 	}
-	
+
 	@Test(expected=IllegalArgumentException.class)
 	public void testThatAllNullStringsAreRejected() {
 		ssn = new SocialSecurityNumber(null, null, null);
 	}
-	
+
 	@Test(expected=IllegalArgumentException.class)
 	public void testThatAllEmptyStringsAreRejected() {
 		ssn = new SocialSecurityNumber("", "", "");
 	}
-	
+
 	@Test(expected=IllegalArgumentException.class)
 	public void testThatNonNumericsAreRejected() {
 		ssn = new SocialSecurityNumber("ABC", "DE", "FGHI");
@@ -140,4 +137,8 @@ public class SocialSecurityNumberTest {
 		assertEquals(h1, h2);
 	}
 
+	@Test public void testToString() {
+		SocialSecurityNumber ssn = new SocialSecurityNumber("123", "45", "6789");
+		assertEquals("123-45-6789", ssn.toString());
+	}
 }
