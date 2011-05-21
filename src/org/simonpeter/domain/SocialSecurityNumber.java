@@ -11,9 +11,9 @@ import org.simonpeter.test.GuardedString;
  * Represent a U.S. Social Security Number.
  *
  * @author  Simon Peter Chappell
- * @version 20100707
+ * @version 20100822
  */
-public class SocialSecurityNumber {
+public class SocialSecurityNumber implements Comparable<SocialSecurityNumber> {
 
 	private final String _areaNumber;
 	private final String _groupNumber;
@@ -105,5 +105,33 @@ public class SocialSecurityNumber {
 	 */
 	@Override public String toString() {
 		return _areaNumber+"-"+_groupNumber+"-"+_serialNumber;
+	}
+
+	/**
+	 * Returns a negative integer, zero or positive integer as this
+	 * object is less than, equal to or greater than the specified
+	 * {@link SocialSecurityNumber}.
+	 * <p>
+	 * This method supports sorting of collections.
+	 * <p>
+	 * A good description of the requirements for the {@link Comparable}
+	 * interface is given in <cite>Effective Java</cite> by Joshua
+	 * Bloch.
+	 */
+	public int compareTo(SocialSecurityNumber that) {
+		// Compare area codes.
+		if (this._areaNumber.compareTo(that.getAreaNumber()) < 0) { return -1; }
+		if (this._areaNumber.compareTo(that.getAreaNumber()) > 0) { return 1; }
+		
+		// Area codes are equal, so compare group numbers.
+		if (this._groupNumber.compareTo(that.getGroupNumber()) < 0) { return -1; }
+		if (this._groupNumber.compareTo(that.getGroupNumber()) > 0) { return 1; }
+		
+		// Group numbers are equal, so compare serial numbers.
+		if (this._serialNumber.compareTo(that.getSerialNumber()) < 0) { return -1; }
+		if (this._serialNumber.compareTo(that.getSerialNumber()) > 0) { return 1; }
+
+		// All fields are equal.
+		return 0;
 	}
 }

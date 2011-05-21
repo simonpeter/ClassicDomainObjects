@@ -13,7 +13,7 @@ import org.junit.Test;
  * Test the {@link SocialSecurityNumber} domain object.
  *
  * @author  Simon Peter Chappell
- * @version 20100707
+ * @version 20100822
  * @see org.simonpeter.domain.SocialSecurityNumber
  */
 public class SocialSecurityNumberTest {
@@ -140,5 +140,16 @@ public class SocialSecurityNumberTest {
 	@Test public void testToString() {
 		SocialSecurityNumber ssn = new SocialSecurityNumber("123", "45", "6789");
 		assertEquals("123-45-6789", ssn.toString());
+	}
+
+	@Test public void testCompareTo() {
+		SocialSecurityNumber ssn1 = new SocialSecurityNumber("111", "22", "3333");
+		SocialSecurityNumber ssn2 = new SocialSecurityNumber("123", "45", "6789");
+		SocialSecurityNumber ssn3 = new SocialSecurityNumber("123", "45", "6789");
+		SocialSecurityNumber ssn4 = new SocialSecurityNumber("444", "55", "6666");
+		assertEquals(-1, ssn1.compareTo(ssn4));
+		assertEquals(0, ssn2.compareTo(ssn3));
+		assertEquals(0, ssn3.compareTo(ssn2));
+		assertEquals(1, ssn4.compareTo(ssn1));
 	}
 }
